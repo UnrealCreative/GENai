@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lil Gemini v4.2: The Brain Monitor</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --neon: #00ffcc;
+            --text: #d1d1d1;
+            --accent: #bb86fc;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #sidebar {
+            width: 350px;
+            background: #111;
+            padding: 20px;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: #000;
+            color: var(--neon);
+            border: 1px solid #444;
+            padding: 10px;
+            font-family: monospace;
+            border-radius: 5px;
+        }
+        #log {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #222;
+        }
+        .msg {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            padding-left: 10px;
+            border-left: 2px solid #333;
+        }
+        .user {
+            border-left-color: var(--neon);
+            color: var(--neon);
+        }
+        .ai {
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+        .system {
+            border-left-color: #888;
+            color: #888;
+            font-size: 14px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--neon);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* New Visualizer Style */
+        #monitor {
+            margin-top: 20px;
+            padding: 15px;
+            background: #000;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #0f0;
+            min-height: 100px;
+        }
+        .prob-bar {
+            height: 10px;
+            background: #0f0;
+            margin-bottom: 5px;
+            border-radius: 2px;
+        }
+        
+        /* New features styling */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        .temp-value {
+            color: var(--neon);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h3>🧠 Training Data</h3>
+    <textarea id="data-input">
+Artificial intelligence is a tool for humans.
+Artificial intelligence is the future of science.
+Artificial intelligence is scary but cool.
+Artificial intelligence is what we make of it.
+What is AI? AI is a branch of code.
+What is AI? AI is basically math.
+The future holds many possibilities for AI.
+AI can help solve complex problems.
+Machine learning is a subset of AI.
+Neural networks power modern AI systems.
+Artificial intelligence is a tool for humans.
+Artificial intelligence is the future of science.
+Artificial intelligence is scary but cool.
+Artificial intelligence is what we make of it.
+What is AI? AI is a branch of code.
+What is AI? AI is basically math.
+The future holds many possibilities for AI.
+AI can help solve complex problems.
+Machine learning is a subset of AI.
+Neural networks power modern AI systems.
+Intelligence is not a single thing but a collection of capabilities.
+AI systems learn patterns from data, not from explicit rules.
+The goal of AI is to augment human ability, not to replace human judgment.
+Understanding is different from prediction; AI excels at the latter.
+AI models are statistical approximations of reality, not ground truth.
+General intelligence remains an unsolved challenge for machines.
+AI reflects the biases present in its training data and design choices.
+Transparency in AI decision-making is crucial for trust and accountability.
+An AI's objective function defines what it considers success.
+The alignment problem asks how to ensure AI goals match human values.
+Code is poetry written in logic and constraints.
+Programs are sets of instructions that transform input into output.
+Algorithms are step-by-step recipes for solving problems.
+Debugging is the process of finding and fixing errors in code.
+Version control tracks changes and enables collaboration.
+Compilers translate human-readable code into machine-executable instructions.
+APIs allow different software systems to communicate and share data.
+Libraries and frameworks accelerate development by reusing common patterns.
+Testing ensures code behaves as expected under various conditions.
+Technical debt accumulates when shortcuts are taken in development.
+Data is the fuel that powers modern machine learning.
+Supervised learning uses labeled examples to train predictive models.
+Unsupervised learning finds hidden structure in unlabeled data.
+Reinforcement learning trains agents through trial and error with rewards.
+Overfitting occurs when a model memorizes training data instead of generalizing.
+Cross-validation helps estimate how well a model will perform on new data.
+Feature engineering transforms raw data into meaningful inputs for models.
+Gradient descent is an optimization algorithm that minimizes error.
+Large datasets often lead to better model performance, but with diminishing returns.
+Data quality matters more than data quantity for building reliable models.
+Humans are social creatures who thrive on cooperation and storytelling.
+Cognition involves perception, memory, reasoning, and emotion.
+Creativity emerges from combining existing ideas in novel ways.
+Ethics guide human choices about what is right, wrong, and just.
+Culture shapes how people think, communicate, and solve problems.
+Empathy allows humans to understand and share the feelings of others.
+Learning is a lifelong process of adapting to new information.
+Human memory is reconstructive, not a perfect recording of events.
+Decision-making blends logic, intuition, and emotion.
+Technology changes how humans work, play, and relate to one another.
+AI should be designed to complement human strengths and weaknesses.
+Explainable AI helps users understand why a system made a particular choice.
+Trust in AI must be earned through reliability and transparency.
+Human-in-the-loop systems keep people involved in critical decisions.
+AI can amplify human creativity by generating options and inspiration.
+Poorly designed AI can erode human skills and autonomy.
+User interfaces shape how people perceive and interact with AI.
+Feedback loops between humans and AI can improve both over time.
+AI literacy is becoming essential for navigating modern life.
+The best AI tools feel like thoughtful collaborators, not black boxes.
+Powerful technologies require careful governance and oversight.
+Privacy is a fundamental human right in the digital age.
+Algorithmic bias can perpetuate and even amplify social inequalities.
+AI can be used for both beneficial and harmful purposes.
+Accountability for AI outcomes must be clearly assigned.
+Misinformation generated by AI can spread quickly and cause harm.
+Security vulnerabilities in AI systems can have widespread consequences.
+Regulation can help steer AI development toward public benefit.
+Long-term risks of advanced AI deserve serious study and precaution.
+Responsible innovation balances progress with prudence and care.
+Scientific discovery may accelerate with AI as a research assistant.
+Education could become more personalized and adaptive with AI tutors.
+Healthcare may see earlier diagnoses and tailored treatments through AI.
+Creative industries might blend human and machine authorship.
+Cities could become more efficient and sustainable with AI-optimized systems.
+Work may shift toward tasks that require empathy, strategy, and creativity.
+Global challenges like climate change could benefit from AI-driven modeling.
+Human identity may evolve as AI becomes more capable and integrated.
+Cooperation between humans and AI could unlock new forms of problem-solving.
+The future is not predetermined; choices today shape what comes next.
+A function takes inputs, processes them, and returns outputs.
+Loops repeat actions until a condition is satisfied.
+Conditional statements allow programs to make decisions.
+Variables store data that can change during program execution.
+Errors and exceptions provide feedback when something goes wrong.
+Modular code is easier to understand, test, and maintain.
+Documentation helps others (and your future self) understand the code.
+Design patterns offer proven solutions to common problems.
+Refactoring improves code without changing its behavior.
+Automation saves time by letting computers handle repetitive tasks.
+Metrics quantify performance and guide improvement.
+Accuracy alone can be misleading for imbalanced datasets.
+Precision and recall provide a more nuanced view of classifier performance.
+A confusion matrix shows where predictions succeed and fail.
+Human evaluation remains essential for tasks involving meaning and value.
+A/B testing compares alternatives to see which performs better.
+Correlation does not imply causation.
+Outliers can reveal errors or important edge cases.
+Data visualization helps humans spot patterns and anomalies.
+Robust evaluation requires diverse and representative test data.      
+    </textarea>
+    <button onclick="train()" style="margin-top: 10px;">🧠 Sync Neurons</button>
+    
+    <div class="stats">
+        <div>Words: <span id="word-count">0</span></div>
+        <div>Phrases: <span id="phrase-count">0</span></div>
+        <div>Temp: <span id="temp-value" class="temp-value">5</span></div>
+    </div>
+    
+    <div id="monitor">
+        <strong>LIVE BRAIN MONITOR</strong>
+        <div id="neuron-display">Waiting for input...</div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+    <label>Creativity (Temperature): </label>
+    <input type="range" id="temp" min="1" max="10" value="5" style="width: 100%;" oninput="updateTempValue()">
+</div>
+
+<div id="chat">
+    <div id="log">
+        <div class="msg system">🧠 Brain Monitor Active. Try asking "What is artificial..."</div>
+        <div class="msg system">💡 Pro Tip: Use longer training texts for better results!</div>
+    </div>
+    <div class="controls">
+        <input type="text" id="user-in" placeholder="Type a start phrase..." onkeypress="handleKeyPress(event)">
+        <button onclick="generate()">Generate</button>
+    </div>
+</div>
+
+<script>
+    let nGramModel = {};
+    const N = 2;
+
+    function train() {
+        // We keep the raw text to learn from, but we lowercase it for the "Brain Map"
+        const text = document.getElementById('data-input').value.toLowerCase();
+        
+        // Improved Regex: This keeps words together but removes the messy stuff
+        const words = text.replace(/[^\w\s]/g, "").split(/\s+/).filter(w => w.length > 0);
+        nGramModel = {};
+
+        for (let i = 0; i <= words.length - N; i++) {
+            let context = words.slice(i, i + N).join(" ");
+            let nextWord = words[i + N] || null;
+            if (!nGramModel[context]) nGramModel[context] = [];
+            if (nextWord) nGramModel[context].push(nextWord);
+        }
+        
+        // Visual feedback that the brain is case-insensitive now
+        addLog("System", "Normalization Active. I now see 'Mr. Cade' and 'mr cade' as the same person.");
+        updateStats(words.length, Object.keys(nGramModel).length);
+    }
+
+    function generate() {
+        let rawInput = document.getElementById('user-in').value.trim();
+        if (!rawInput) {
+            addLog("System", "Please enter a starting phrase.");
+            return;
+        }
+        
+        addLog("User", rawInput);
+        
+        // NEW: Clean the input to match the lowercase brain
+        let cleanInput = rawInput.toLowerCase().replace(/[^\w\s]/g, "");
+        let result = cleanInput.split(/\s+/);
+        
+        let temp = document.getElementById('temp').value;
+
+        for (let i = 0; i < 20; i++) {
+            let context = result.slice(-2).join(" ");
+            let possibilities = nGramModel[context] || [];
+
+            // Fallback to 1 word if the pair isn't found
+            if (possibilities.length === 0) {
+                let lastWord = result[result.length - 1];
+                for (let key in nGramModel) {
+                    if (key.startsWith(lastWord + " ")) possibilities.push(...nGramModel[key]);
+                }
+            }
+
+            if (possibilities.length === 0) break;
+
+            // Show neuron probabilities on first iteration
+            if (i === 0) showNeurons(possibilities);
+
+            let nextWord;
+            if (temp < 3) {
+                nextWord = getMostFrequent(possibilities);
+            } else {
+                nextWord = possibilities[Math.floor(Math.random() * possibilities.length)];
+            }
+            result.push(nextWord);
+        }
+
+        addLog("AI", result.join(" ") + ".");
+        document.getElementById('user-in').value = "";
+    }
+
+    function showNeurons(list) {
+        const counts = {};
+        list.forEach(w => counts[w] = (counts[w] || 0) + 1);
+        let html = "Next word probabilities:<br>";
+        // Sort by frequency (descending)
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        sorted.forEach(([word, count]) => {
+            let percent = (count / list.length) * 100;
+            html += `${word}: ${percent.toFixed(0)}%<br><div class="prob-bar" style="width: ${percent}%"></div>`;
+        });
+        document.getElementById('neuron-display').innerHTML = html;
+    }
+
+    function getMostFrequent(arr) {
+        return arr.sort((a, b) => 
+            arr.filter(v => v===a).length - arr.filter(v => v===b).length
+        ).pop();
+    }
+
+    function addLog(sender, text) {
+        const log = document.getElementById('log');
+        const div = document.createElement('div');
+        div.className = `msg ${sender.toLowerCase()}`;
+        div.innerHTML = `<strong>${sender}: </strong> ${text}`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+    }
+    
+    function updateStats(words, phrases) {
+        document.getElementById('word-count').textContent = words;
+        document.getElementById('phrase-count').textContent = phrases;
+    }
+    
+    function updateTempValue() {
+        const temp = document.getElementById('temp').value;
+        document.getElementById('temp-value').textContent = temp;
+    }
+    
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            generate();
+        }
+    }
+    
+    // Initialize on load
+    window.onload = function() {
+        train();
+        updateTempValue();
+    };
+</script>
+</body>
+</html>
